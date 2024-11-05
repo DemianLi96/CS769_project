@@ -26,6 +26,9 @@ class LlavaLlamaForCausalLM(LlamaForCausalLM, LlavaMetaForCausalLM):
         self.lm_head = nn.Linear(config.hidden_size, config.vocab_size, bias=False)
         self.post_init()
 
+    def get_model(self):
+        return self.model
+
     def forward(
             self,
             input_ids: torch.LongTensor = None,
