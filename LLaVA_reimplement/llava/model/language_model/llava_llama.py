@@ -29,6 +29,22 @@ class LlavaLlamaForCausalLM(LlamaForCausalLM, LlavaMetaForCausalLM):
     def get_model(self):
         return self.model
 
+    def prepare_inputs_for_generation(
+        self, input_ids, past_key_values=None, attention_mask=None, inputs_embeds=None, **kwargs
+    ):
+        if past_key_values:
+            input_ids = input_ids[:, -1:]
+
+        model_inputs = {"input_ids": input_ids} if inputs_embeds is None or past_key_values else {"inputs_embeds": inputs_embeds}
+
+        model_inputs.update({
+            "past_key_values": past_key_values,
+            "use_cache": kwargs.get("use_cache"),
+            "attention_mask": attention_mask,
+            "images": kwargs.get("images", None),
+        })
+        return model_inputs
+
     def forward(
             self,
             input_ids: torch.LongTensor = None,
