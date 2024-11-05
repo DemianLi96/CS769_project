@@ -71,7 +71,7 @@ def compare_conversations(large_data_dict, small_json, output_file_path):
             found_entries.append({
                 "id": small_id,
                 "image": large_conversations_data['image'],
-                "conversations": found_conversations
+                "conversations": small_entry['conversations']
             })
 
     with open(output_file_path, 'w', encoding='utf-8') as output_file:
@@ -87,7 +87,7 @@ def compare_conversations(large_data_dict, small_json, output_file_path):
 if __name__ == '__main__':
     large_json_path = '../../data/llava_instruct_80k.json'
     small_json_path = '../../data/complex_reasoning_77k.json'
-    output_file_path = '../../data/found_entries.json'
+    output_file_path = '../../data/test_reasoning_100.json'
     large_data_dict = load_json_as_dict(large_json_path)
     small_json = load_small_json(small_json_path)
     compare_conversations(large_data_dict, small_json, output_file_path)
