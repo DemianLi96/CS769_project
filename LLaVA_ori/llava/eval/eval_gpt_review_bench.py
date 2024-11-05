@@ -12,7 +12,7 @@ def get_eval(content: str, max_tokens: int):
     while True:
         try:
             response = openai.ChatCompletion.create(
-                model='gpt-4-0314',
+                model='gpt-4o-mini',
                 messages=[{
                     'role': 'system',
                     'content': 'You are a helpful and precise assistant for checking the quality of the answer.'
@@ -104,7 +104,7 @@ if __name__ == '__main__':
             'category': category
         }
         if idx >= len(cur_reviews):
-            review = get_eval(content, args.max_tokens)
+            review = get_eval(content, args.max_tokens=300)
             scores = parse_score(review)
             cur_js['content'] = review
             cur_js['tuple'] = scores
