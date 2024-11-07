@@ -4,7 +4,7 @@ This repository is dedicated to fine-tuning and evaluating the LLava model to bu
 
 ## Files and Folders
 
-- **`llava_finetune_using_custom_dataset.ipynb`**: This Jupyter Notebook is used to fine-tune the LLava model on a custom dataset. It includes the necessary steps to prepare the data, adjust the model parameters, and conduct the fine-tuning process. Additionally, it provides a testing framework to evaluate LLava’s performance on the custom dataset.
+- **`LLaVA_reimplement/`**: This folder contains the reimplemenation code of the LLava model.
 
 - **`LLaVA_ori/`**: This folder contains the original source code of the LLava model, used as a baseline reference.
 
