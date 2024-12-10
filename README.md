@@ -4,9 +4,9 @@ This repository is dedicated to fine-tuning and evaluating the LLava model to bu
 
 ## Files and Folders
 
-- **`LLaVA_reimplement/`**: This folder contains the reimplementation code of the LLava model.
-
 - **`LLaVA_ori/`**: This folder contains the original source code of the LLava model, used as a baseline reference.
+
+- **`LLaVA_reimplement/`**: This folder contains the reimplementation code of the LLava model.
 
 - **`data/`**: This folder contains the data used for reimplementing the LLava model.
 
