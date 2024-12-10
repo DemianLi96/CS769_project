@@ -18,7 +18,7 @@ def get_eval(content: str, max_tokens: int, temperature=0.2):
     while True:
         try:
             completion = client.chat.completions.create(
-                model="gpt-4",
+                model="gpt-4o-mini",
                 messages=[
                     {
                         "role": "system",
@@ -126,4 +126,3 @@ if __name__ == '__main__':
         idx += 1
         print(idx)
     review_file.close()
-
