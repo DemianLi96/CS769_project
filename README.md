@@ -42,7 +42,7 @@ The project consists of three main components:
    - Implements efficient generation with cached key-values
    - Provides seamless integration with Hugging Face's transformers library
 
-## Performance Results
+## Performance Results(Double Check)
 
 Our implementation achieves competitive results compared to the original LLaVA:
 
@@ -54,7 +54,7 @@ Our implementation achieves competitive results compared to the original LLaVA:
 | Detailed Description | 75.3% | 70.2% |
 | Complex Reasoning | 96.5% | 87.0% |
 
-## Setup and Installation
+## Setup and Installation(TO BE UPDATED)
 
 1. **Prerequisites**
    - Python 3.8+
@@ -74,7 +74,7 @@ Our implementation achieves competitive results compared to the original LLaVA:
    - Download the Food-101 dataset
    - Set up the required environment variables
 
-## Usage
+## Usage(TO BE UPDATED)
 
 1. **Basic Image Recognition**
    ```python
@@ -97,7 +97,7 @@ Our implementation achieves competitive results compared to the original LLaVA:
    )
    ```
 
-## Training
+## Training(TO BE UPDATED)
 
 To fine-tune the model on your own dataset:
 
@@ -126,9 +126,9 @@ The model can be evaluated using:
 ## Future Work
 
 - Implement fine-grained image detail representation
-- Expand the dataset with more food categories
+- Expand the dataset with more food categories 
+- Improve model generalization
 - Enhance nutritional information accuracy
-- Improve multi-turn conversation capabilities
 
 ## Contributors
 
