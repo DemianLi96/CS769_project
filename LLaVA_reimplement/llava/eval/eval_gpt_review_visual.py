@@ -9,9 +9,21 @@ NUM_SECONDS_TO_SLEEP = 0.5
 
 
 def get_eval(content: str, max_tokens: int, temperature=0.2):
+    """
+    Calls OpenAI's Chat Completion API to evaluate the provided content.
+    Args:
+        content (str): The input content to be evaluated.
+        max_tokens (int): Maximum tokens for the model output.
+        temperature (float): Sampling temperature for the model.
+    Returns:
+        str: The evaluated response.
+    """
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
-        raise ValueError("API key not found. Please set the OPENAI_API_KEY environment variable.")
+        raise EnvironmentError(
+            "OPENAI_API_KEY environment variable is not set. "
+            "Please set it using `export OPENAI_API_KEY=<your_api_key>` in your terminal."
+        )
 
     client = OpenAI(api_key=api_key)
 
@@ -36,26 +48,25 @@ def get_eval(content: str, max_tokens: int, temperature=0.2):
             print('success!')
             return response_text
         except openai.error.RateLimitError:
-            print("Rate limit error; retrying...")
+            print("Rate limit exceeded. Retrying...")
             time.sleep(NUM_SECONDS_TO_SLEEP)
         except Exception as e:
-            print(e)
+            print(f"Unexpected error: {e}")
             time.sleep(NUM_SECONDS_TO_SLEEP)
+    raise RuntimeError("Failed to retrieve a response from the OpenAI API after multiple attempts.")
 
 
 def parse_score(review):
     try:
-        score_pair = review.split('\n')[0]
-        score_pair = score_pair.replace(',', ' ')
-        sp = score_pair.split(' ')
+        score_pair = review.split('\n')[0].replace(',', ' ')
+        sp = score_pair.split()
         if len(sp) == 2:
             return [float(sp[0]), float(sp[1])]
         else:
-            print('error', review)
+            print(f"Error: Expected two scores but got {len(sp)} elements in '{review}'")
             return [-1, -1]
     except Exception as e:
-        print(e)
-        print('error', review)
+        print(f"Exception: {e} in '{review}'")
         return [-1, -1]
 
 
@@ -122,7 +133,7 @@ if __name__ == '__main__':
             review_file.write(json.dumps(cur_js) + '\n')
             review_file.flush()
         else:
-            print(f'Skipping {idx} as we already have it.')
+            print(f'Skipping {idx} as already evaluated.')
         idx += 1
         print(idx)
     review_file.close()
