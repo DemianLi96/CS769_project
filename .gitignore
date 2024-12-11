@@ -7,7 +7,6 @@ dist
 # Log
 *.log
 *.log.*
-*.json
 
 # Data
 !**/alpaca-data-conversation.json
@@ -23,4 +22,5 @@ output
 
 checkpoints
 ckpts*
+/dev/
 /data/test_images/
