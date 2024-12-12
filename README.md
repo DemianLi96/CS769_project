@@ -52,50 +52,81 @@ Our implementation achieves competitive results compared to the original LLaVA:
 | Detailed Description | 75.3% | 70.2% |
 | Complex Reasoning | 96.5% | 87.0% |
 
-## Setup and Installation(TO BE UPDATED)
+## Setup and Installation
 
-1. **Prerequisites**
-   - Python 3.8+
-   - PyTorch
-   - Transformers library
-   - CUDA-capable GPU (recommended)
+### Prerequisites
 
-2. **Installation**
-   ```bash
-   git clone [repository-url]
-   cd [repository-name]
-   pip install -r requirements.txt
-   ```
+- **Docker** (recommended)
+- **Python 3.8+**
+- **PyTorch** (2.3.1+ with CUDA 12.1 support is recommended)
+- **Transformers library**
+- A **CUDA-capable GPU** is strongly recommended for training and inference.
+
+### Using a Docker Image
+
+You can use the official PyTorch Docker image as the base environment. For example:
+
+```bash
+docker pull pytorch/pytorch:2.3.1-cuda12.1-cudnn8-devel
+docker run -it --gpus all --name llava_container pytorch/pytorch:2.3.1-cuda12.1-cudnn8-devel /bin/bash
+
+```
+
+After starting the container, clone this repository and install the required dependencies:
+
+```bash
+git clone [repository-url]
+cd [repository-name]/LLaVA_reimplement
+pip install -e .
+
+```
+
+This will install the project in editable mode, allowing you to modify the code and immediately see the changes.
+
+### Building from a Dockerfile
+
+Alternatively, you can build your own Docker image using the provided Dockerfile:
+
+```bash
+docker build -t llava_diet_assessment:latest -f Dockerfile .
+docker run -it --gpus all --name llava_container llava_diet_assessment:latest /bin/bash
+
+```
+
+### Required Dataset: COCO2014
+
+You need the COCO2014 dataset for training and evaluation:
+
+1. Download the COCO2014 images and annotations from the [COCO dataset website](https://cocodataset.org/).
+2. Extract the dataset into a directory, for example:
+    
+    ```bash
+    mkdir -p /data/coco2014
+    tar -xvf train2014.zip -C /data/coco2014/
+    tar -xvf val2014.zip -C /data/coco2014/
+    tar -xvf annotations_trainval2014.zip -C /data/coco2014/
+    
+    ```
+    
+3. Set environment variables or provide paths in configuration files to point the model to the COCO2014 dataset directory.
 
 3. **Model Download**
    - Download the pre-trained LLaVA model
    - Download the Food-101 dataset
    - Set up the required environment variables
 
-## Usage(TO BE UPDATED)
+## Usage
 
-1. **Basic Image Recognition**
-   ```python
-   from llava_llama import LlavaLlamaForCausalLM
-   from clip_encoder import CLIPVisionTower
+```bash
+python model_vqa.py \
+    --model-path /workspace/llava-llama-2-7b-chat-finetune_reasoning_20k/ \
+    --question-file ./qa90_questions.jsonl \
+    --image-folder /workspace/val2014 \
+    --answers-file ./answer-file-our.jsonl
+```
 
-   # Initialize the model
-   model = LlavaLlamaForCausalLM.from_pretrained("path/to/model")
-   
-   # Process an image
-   results = model.generate(image, prompt="What food is in this image?")
-   ```
 
-2. **Nutritional Analysis**
-   ```python
-   # Get nutritional information
-   nutrition = model.generate(
-       image, 
-       prompt="What are the nutritional components of this dish?"
-   )
-   ```
-
-## Training(TO BE UPDATED)
+## Training
 
 To fine-tune the model on your own dataset:
 
@@ -106,11 +137,40 @@ To fine-tune the model on your own dataset:
 
 2. **Fine-tuning**
    ```bash
-   python train.py \
-       --data_path /path/to/data \
-       --output_dir /path/to/save \
-       --epochs 3 \
-       --batch_size 8
+   PROMPT_VERSION="llava_llama_2"
+   MODEL_VERSION="llama-2-7b-chat"
+   deepspeed train.py \
+       --deepspeed /root/transfer/zero3.json \
+       --model_name_or_path meta-llama/Llama-2-7b-chat-hf \
+       --version $PROMPT_VERSION \
+       --data_path /your_data.json \
+       --image_folder /your_image_folder \
+       --vision_tower openai/clip-vit-large-patch14 \
+       --pretrain_mm_mlp_adapter /root/pretrain-llama-2-7b-chat/mm_projector.bin \
+       --mm_vision_select_layer -2 \
+       --mm_use_im_start_end False \
+       --mm_use_im_patch_token False \
+       --bf16 True \
+       --output_dir ./checkpoints/llava-llama-2-7b-chat-finetune \
+       --num_train_epochs 1 \
+       --per_device_train_batch_size 8 \
+       --per_device_eval_batch_size 4 \
+       --gradient_accumulation_steps 16 \
+       --evaluation_strategy "no" \
+       --save_strategy "steps" \
+       --save_steps 50000 \
+       --save_total_limit 1 \
+       --learning_rate 2e-5 \
+       --weight_decay 0. \
+       --warmup_ratio 0.03 \
+       --lr_scheduler_type "cosine" \
+       --logging_steps 1 \
+       --tf32 True \
+       --model_max_length 2048 \
+       --gradient_checkpointing True \
+       --dataloader_num_workers 4 \
+       --lazy_preprocess True \
+       --report_to wandb
    ```
 
 ## Evaluation
