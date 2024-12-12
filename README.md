@@ -20,8 +20,6 @@ This project extends LLaVA's capabilities to create a specialized system for die
 
 - **`data/`**: This folder contains the data used for reimplementing the LLaVA model.
 
-- **`gpt.py`**: This file illustrates using OpenAI's API to generate a descriptive response about an image.
-
 - **`llava_finetune_using_custom_dataset.ipynb`**: This file uses a custom dataset, combining natural language processing and vision tasks for multi-modal learning.
 
 ## Architecture
